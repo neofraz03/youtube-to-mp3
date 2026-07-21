@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  python-app:
+    build: .
+    environment:
+      - YOUTUBE_API_KEY=YOUR_API_KEY_HERE (replace with your API key)
+    volumes:
+      - ./config:/etc/youtube-dl/config.json
+    ports:
+      - "8000:8000"
+
+  ffmpeg:
+    image: ffmpeg:latest
+    depends_on:
+      - python-app
+
+  webserver:
+    build: .
+    ports:
+      - "8080:80"
