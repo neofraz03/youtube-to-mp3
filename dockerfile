@@ -1,16 +1,18 @@
-# Stage 1: Build FFmpeg dependencies
-FROM ffmpeg:latest AS build-ffmpeg
+FROM python:3.11-slim
+
+# Install ffmpeg system dependencies
+RUN apt-get update && apt-get install -y ffmpeg && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
+
+# Copy and install dependencies
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Stage 2: Build the Python application with dependencies
-FROM python:3.9-slim
-WORKDIR /app
+# Copy the rest of the application code
 COPY . .
-RUN pip install -r requirements.txt
-COPY app.py .
 
-# Define environment variables and commands
-ENV YOUTUBE_API_KEY=YOUR_API_KEY_HERE (replace with your API key)
-CMD ["python", "app.py"]
+EXPOSE 8080
+
+# Combines the pip upgrade and app launch smoothly into one command string
+CMD ["sh", "-c", "pip install --no-cache-dir --upgrade yt-dlp && python app.py"]

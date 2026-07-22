@@ -1,21 +1,13 @@
-version: '3'
-
 services:
-  python-app:
-    build: .
-    environment:
-      - YOUTUBE_API_KEY=YOUR_API_KEY_HERE (replace with your API key)
-    volumes:
-      - ./config:/etc/youtube-dl/config.json
-    ports:
-      - "8000:8000"
-
-  ffmpeg:
-    image: ffmpeg:latest
-    depends_on:
-      - python-app
-
   webserver:
-    build: .
+    #build: .
+    image: neofraz03/youtube-to-mp3
+    platform: linux/amd64
+    container_name: youtube_to_mp3_converter
     ports:
-      - "8080:80"
+      - "8080:8080"
+    volumes:
+      - ./downloads:/tmp/downloads
+    environment:
+      - YOUTUBE_API_KEY=YOUR_API_KEY_HERE
+    restart: always
